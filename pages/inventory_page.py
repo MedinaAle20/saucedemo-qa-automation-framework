@@ -4,9 +4,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from pages.base_page import BasePage
 
 
+# Page Object del catalogo de productos de SauceDemo.
 class InventoryPage(BasePage):
-    """Page Object del catalogo de productos."""
-
     TITLE = (By.CSS_SELECTOR, ".title")
     PRODUCT_ITEM = (By.CSS_SELECTOR, "[data-test='inventory-item']")
     PRODUCT_NAME = (By.CSS_SELECTOR, "[data-test='inventory-item-name']")
@@ -33,7 +32,6 @@ class InventoryPage(BasePage):
         if product_name not in self.get_product_names():
             raise AssertionError(f"No se encontro el producto: {product_name}")
 
-        # SauceDemo arma el data-test del boton a partir del nombre del producto.
         slug = self._product_slug(product_name)
         button = self.find_clickable((By.CSS_SELECTOR, f"[data-test='add-to-cart-{slug}']"))
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", button)

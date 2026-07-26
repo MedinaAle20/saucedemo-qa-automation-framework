@@ -3,9 +3,8 @@ from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 
 
+# Page Object de login de SauceDemo.
 class LoginPage(BasePage):
-    """Page Object de la pantalla de login."""
-
     URL = "https://www.saucedemo.com/"
 
     USERNAME_INPUT = (By.ID, "user-name")
