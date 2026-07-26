@@ -168,9 +168,3 @@ Incluye usuario valido, usuarios invalidos, datos de checkout y productos espera
 - Logging centralizado.
 - Screenshots automaticos ante fallos.
 - Separacion clara entre pruebas UI y API.
-
-## Nombre del repositorio
-
-Nombre profesional del proyecto: `SauceDemo QA Automation Framework`
-
-Nombre recomendado para GitHub: `saucedemo-qa-automation-framework`
