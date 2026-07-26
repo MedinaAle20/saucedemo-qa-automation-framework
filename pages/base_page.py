@@ -3,9 +3,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
+# Acciones comunes para Page Objects, con esperas explicitas y fallbacks para UI dinamica.
 class BasePage:
-    """Acciones comunes para las pages del Page Object Model."""
-
     def __init__(self, driver, timeout=10):
         self.driver = driver
         self.wait = WebDriverWait(driver, timeout)
@@ -31,7 +30,6 @@ class BasePage:
         try:
             element.click()
         except (ElementClickInterceptedException, ElementNotInteractableException):
-            # En modo headless a veces el click normal queda tapado por el layout.
             self.driver.execute_script("arguments[0].click();", element)
 
     def type_text(self, locator, text):
@@ -42,7 +40,6 @@ class BasePage:
         element.send_keys(text)
 
         if element.get_attribute("value") != text:
-            # Fallback para inputs de React cuando send_keys no deja el valor cargado.
             self.driver.execute_script(
                 """
                 const element = arguments[0];

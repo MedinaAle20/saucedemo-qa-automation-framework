@@ -1,4 +1,4 @@
-name: Automation Tests
+name: SauceDemo QA Automation Tests
 
 on:
   push:

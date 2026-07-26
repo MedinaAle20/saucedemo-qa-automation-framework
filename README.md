@@ -1,10 +1,12 @@
-# Proyecto Final - Automation Testing SauceDemo
+# SauceDemo QA Automation Framework
+
+[![Automation Tests](https://github.com/MedinaAle20/saucedemo-qa-automation-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/MedinaAle20/saucedemo-qa-automation-framework/actions/workflows/tests.yml)
 
 Autor: Alejandro Medina
 
 ## Proposito del proyecto
 
-Este proyecto automatiza pruebas web y de API para la entrega final del curso.
+Framework de automatizacion QA para validar flujos web de SauceDemo y endpoints publicos de JSONPlaceholder.
 
 La parte UI prueba flujos principales de SauceDemo: login, catalogo, carrito, checkout y logout. La parte API usa JSONPlaceholder para validar requests GET, POST y DELETE.
 
@@ -104,7 +106,7 @@ El reporte muestra que tests se ejecutaron, si pasaron o fallaron y cuanto tarda
 
 ## GitHub Actions
 
-El proyecto incluye un workflow basico en:
+El proyecto incluye un workflow de integracion continua en:
 
 ```text
 .github/workflows/tests.yml
@@ -166,3 +168,9 @@ Incluye usuario valido, usuarios invalidos, datos de checkout y productos espera
 - Logging centralizado.
 - Screenshots automaticos ante fallos.
 - Separacion clara entre pruebas UI y API.
+
+## Nombre del repositorio
+
+Nombre profesional del proyecto: `SauceDemo QA Automation Framework`
+
+Nombre recomendado para GitHub: `saucedemo-qa-automation-framework`
