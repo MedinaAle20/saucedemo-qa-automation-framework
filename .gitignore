@@ -5,3 +5,9 @@ __pycache__/
 venv/
 htmlcov/
 .coverage
+
+# Generated test evidence (published as CI artifacts when needed)
+reports/*.html
+reports/logs/*.log
+reports/screenshots/*.png
+

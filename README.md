@@ -2,169 +2,129 @@
 
 [![Automation Tests](https://github.com/MedinaAle20/saucedemo-qa-automation-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/MedinaAle20/saucedemo-qa-automation-framework/actions/workflows/tests.yml)
 
-Autor: Alejandro Medina
+## Overview
 
-## Proposito del proyecto
+Python QA automation project covering critical UI flows in [SauceDemo](https://www.saucedemo.com/) and basic API contract checks against [JSONPlaceholder](https://jsonplaceholder.typicode.com/).
 
-Framework de automatizacion QA para validar flujos web de SauceDemo y endpoints publicos de JSONPlaceholder.
+The framework keeps Selenium interactions inside page objects, separates UI and API suites, loads test data from JSON and runs in headless mode through GitHub Actions.
 
-La parte UI prueba flujos principales de SauceDemo: login, catalogo, carrito, checkout y logout. La parte API usa JSONPlaceholder para validar requests GET, POST y DELETE.
-
-El proyecto esta organizado con Page Object Model para que los tests queden simples y la logica de Selenium quede separada en clases de pagina.
-
-Sitio web demo: https://www.saucedemo.com/
-
-API publica: https://jsonplaceholder.typicode.com/
-
-## Tecnologias utilizadas
+## Stack
 
 - Python
 - Pytest
 - Selenium WebDriver
 - Requests
 - Pytest HTML
+- GitHub Actions
 - Page Object Model
-- Git y GitHub
 
-## Estructura del proyecto
+## Architecture
+
+```text
+tests/ui/ ──→ pages/ ──→ Selenium WebDriver ──→ SauceDemo
+tests/api/ ─→ Requests ───────────────────────→ JSONPlaceholder
+                  ↑
+             data/users.json
+
+conftest.py ─→ fixtures, browser lifecycle, logs and failure screenshots
+```
 
 ```text
 .
-|-- conftest.py
-|-- data/
-|   `-- users.json
-|-- pages/
-|   |-- base_page.py
-|   |-- cart_page.py
-|   |-- checkout_page.py
-|   |-- inventory_page.py
-|   |-- login_page.py
-|   `-- menu_page.py
-|-- reports/
-|   |-- logs/
-|   |   `-- ejecucion.log
-|   `-- screenshots/
-|-- requirements.txt
-|-- tests/
-|   |-- api/
-|   |   `-- test_jsonplaceholder_api.py
-|   `-- ui/
-|       `-- test_saucedemo_ui.py
-`-- utils/
-    `-- helpers.py
+├── .github/workflows/tests.yml
+├── conftest.py
+├── data/users.json
+├── pages/
+│   ├── base_page.py
+│   ├── login_page.py
+│   ├── inventory_page.py
+│   ├── cart_page.py
+│   ├── checkout_page.py
+│   └── menu_page.py
+├── tests/
+│   ├── api/test_jsonplaceholder_api.py
+│   └── ui/test_saucedemo_ui.py
+├── utils/helpers.py
+└── requirements.txt
 ```
 
-## Instalacion de dependencias
+## Automated coverage
 
-Desde la carpeta raiz del proyecto:
+### UI
+
+- Successful login
+- Invalid and locked-user login responses
+- Product catalog names, count and price format
+- Adding selected products to the cart
+- End-to-end checkout
+- Side-menu options and logout
+
+### API
+
+- `GET /users`: status and response shape
+- `POST /users`: status and returned payload
+- `DELETE /users/1`: status contract
+
+The API suite validates the public JSONPlaceholder service; it is intentionally separate from SauceDemo because SauceDemo does not expose a public test API for these checks.
+
+## Running the tests
+
+Create and activate a virtual environment, then install dependencies:
 
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-## Ejecucion de pruebas
-
-Ejecutar todos los tests:
+Run all tests:
 
 ```bash
 pytest
 ```
 
-Ejecutar solo pruebas UI:
-
-```bash
-pytest tests/ui
-```
-
-Ejecutar solo pruebas API:
-
-```bash
-pytest tests/api
-```
-
-Ejecutar pruebas UI sin abrir la ventana del navegador:
+Run a specific suite:
 
 ```bash
 pytest tests/ui --headless
+pytest tests/api
 ```
 
-## Reporte HTML
-
-Generar el reporte HTML:
+Generate a local HTML report:
 
 ```bash
-pytest --html=reports/reporte.html --self-contained-html
+pytest --headless --html=reports/reporte.html --self-contained-html
 ```
 
-El reporte queda disponible en:
+Chrome must be available for the UI suite. Selenium Manager resolves the compatible driver.
 
-```text
-reports/reporte.html
-```
+## CI
 
-El reporte muestra que tests se ejecutaron, si pasaron o fallaron y cuanto tardaron. Si una prueba UI falla, se guarda una captura y se agrega al reporte cuando Pytest HTML esta disponible.
+The workflow in [`.github/workflows/tests.yml`](./.github/workflows/tests.yml) runs on pushes and pull requests targeting `master` or `main`.
 
-## GitHub Actions
+It:
 
-El proyecto incluye un workflow de integracion continua en:
+1. installs Python 3.12 and the project dependencies;
+2. executes all tests in headless mode;
+3. generates a self-contained Pytest HTML report;
+4. uploads the report as the `pytest-html-report` workflow artifact, even when a test fails.
 
-```text
-.github/workflows/tests.yml
-```
+## Evidence and generated artifacts
 
-Este workflow se ejecuta en cada push o pull request hacia `master` o `main`. Instala dependencias, corre las pruebas en modo headless y deja el reporte HTML como artefacto.
+- HTML reports are generated locally or by CI and are not versioned.
+- Execution logs are generated at `reports/logs/ejecucion.log` and are not versioned.
+- UI failures create timestamped screenshots under `reports/screenshots/`.
+- The CI run and its downloadable HTML artifact provide the reproducible execution record.
 
-## Logs y screenshots
+Generated reports and logs were removed from source control so GitHub language detection represents the Python codebase instead of temporary HTML output.
 
-El log de ejecucion se guarda en:
+## Test data
 
-```text
-reports/logs/ejecucion.log
-```
+[`data/users.json`](./data/users.json) contains the public SauceDemo demo credentials, invalid-user cases, checkout data and expected catalog products. It contains no private account credential.
 
-Los screenshots automaticos por fallo se guardan en:
+## Design choices
 
-```text
-reports/screenshots/
-```
+- Page Object Model separates browser interactions from assertions.
+- Explicit waits reduce timing-dependent UI failures.
+- UI and API suites can run independently.
+- Shared fixtures manage browser lifecycle and external test data.
+- Failed UI tests capture screenshots without changing test outcomes.
 
-El nombre de cada captura incluye el nombre del test y la fecha/hora, por ejemplo:
-
-```text
-test_login_invalido_20260705_153000.png
-```
-
-## Datos de prueba
-
-Los datos externos se encuentran en:
-
-```text
-data/users.json
-```
-
-Incluye usuario valido, usuarios invalidos, datos de checkout y productos esperados del catalogo.
-
-## Pruebas UI incluidas
-
-- Login exitoso con usuario valido.
-- Login invalido con datos incorrectos y usuario bloqueado.
-- Validacion del catalogo de productos.
-- Agregado de productos al carrito.
-- Checkout completo.
-- Validacion del menu lateral y logout.
-
-## Pruebas API incluidas
-
-- GET de lista de usuarios.
-- POST de creacion de usuario.
-- DELETE de usuario.
-
-## Buenas practicas aplicadas
-
-- Page Object Model para separar la interaccion con la pagina de la logica de los tests.
-- Tests independientes entre si.
-- Uso de waits explicitos en Selenium.
-- Datos de prueba externos en JSON.
-- Logging centralizado.
-- Screenshots automaticos ante fallos.
-- Separacion clara entre pruebas UI y API.
